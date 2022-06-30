@@ -25,9 +25,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FilterConfig implements Filter {
 
+
     @Override
-    public void destroy() {
-        System.out.println("destroy calisti ");
+    public void init(javax.servlet.FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+        System.out.println( "Server Up" );
     }
 
     @SuppressWarnings("unchecked")
@@ -39,7 +41,7 @@ public class FilterConfig implements Filter {
 
         request.setCharacterEncoding("UTF8");
         response.setCharacterEncoding("UTF8");
-
+        String path = request.getRequestURI();
 
 
         // xss control
@@ -63,6 +65,7 @@ public class FilterConfig implements Filter {
                         int errors = scanned.getNumberOfErrors(); // Kural ihlali sayısı
                         List<String> errorMsg = scanned.getErrorMessages(); // İhlal nedenleri
                         String sanitized = scanned.getCleanHTML(); // Temizlenmiş çıktı
+                        System.out.println( "URL :" + path );
                         System.out.println("Temiz çıktı: "+sanitized);
                         System.out.println("İhlal sayısı: "+errors);
                         System.out.println("İhlal nedenleri: "+errorMsg);
@@ -109,9 +112,11 @@ public class FilterConfig implements Filter {
 
     }
 
-
-    public void init(FilterConfig arg0) throws ServletException {
-        // TODO Auto-generated method stub
+    @Override
+    public void destroy() {
+        System.out.println("Server Down");
     }
+
+
 
 }
