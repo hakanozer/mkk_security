@@ -1,6 +1,7 @@
 package com.works.restcontrollers;
 
-import com.works.entities.User;
+import com.works.entities.Admin;
+import com.works.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,12 +17,23 @@ import java.util.*;
 @RequestMapping("/user")
 public class UserRestController {
 
+    final UserService uService;
+    public UserRestController(UserService uService) {
+        this.uService = uService;
+    }
+
 
     @PostMapping("/login")
-    public ResponseEntity login( @Valid @RequestBody User user) {
+    public ResponseEntity login( @Valid @RequestBody Admin user) {
         Map<String, Object> hm = new LinkedHashMap<>();
-        hm.put("status", true);
-        hm.put("user", user);
+        boolean status = uService.userLogin(user.getEmail(), user.getPassword() );
+        if ( status ) {
+            hm.put("status", true);
+            hm.put("user", user);
+        }else {
+            hm.put("status", false);
+            hm.put("user", user);
+        }
         return new ResponseEntity( hm , HttpStatus.OK);
     }
 
