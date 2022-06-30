@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="f" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,22 +15,24 @@
         <div class="col-sm-4">
             <h2>User Login</h2>
             ${ email }
-            <form method="post" action="/login">
+            <f:form method="post" modelAttribute="userModel" action="/login">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Email address</label>
-                    <input required name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                    <f:input path="email" required="true" name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"></f:input>
                     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    <f:errors class="invalid" path="email"></f:errors>
                 </div>
                 <div class="mb-3">
                     <label for="exampleInputPassword1" class="form-label">Password</label>
-                    <input required name="password" type="password" class="form-control" id="exampleInputPassword1">
+                    <f:input path="password" required="true" name="password" type="password" class="form-control" id="exampleInputPassword1"></f:input>
+                    <f:errors class="invalid" path="password"></f:errors>
                 </div>
                 <div class="mb-3 form-check">
                     <input name="remember" type="checkbox" class="form-check-input" id="exampleCheck1">
                     <label class="form-check-label" for="exampleCheck1">Check me out</label>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
+            </f:form>
         </div>
         <div class="col-sm-4"></div>
     </div>
