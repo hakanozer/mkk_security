@@ -22,8 +22,10 @@ public class LoginController {
 
     @PostMapping("/login")
     public String userLogin(@Valid @ModelAttribute("userModel") User user, BindingResult bindingResult, Model model) {
-        model.addAttribute("email", user.getEmail());
-        System.out.println( "Form submit : "+  user.getEmail() + " " + user.getPassword() );
+        if ( !bindingResult.hasErrors() ) {
+            model.addAttribute("email", user.getEmail());
+            System.out.println( "Form submit : "+  user.getEmail() + " " + user.getPassword() );
+        }
         return "login";
     }
 

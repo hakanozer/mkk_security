@@ -3,13 +3,13 @@ package com.works.restcontrollers;
 import com.works.entities.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @RestController
@@ -18,12 +18,30 @@ public class UserRestController {
 
 
     @PostMapping("/login")
-    public ResponseEntity login( @Valid User user) {
+    public ResponseEntity login( @Valid @RequestBody User user) {
         Map<String, Object> hm = new LinkedHashMap<>();
         hm.put("status", true);
         hm.put("user", user);
         return new ResponseEntity( hm , HttpStatus.OK);
     }
 
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity handle( MethodArgumentNotValidException ex ) {
+        Map<String, Object> hm = new LinkedHashMap<>();
+        hm.put("status", false);
+        List<ObjectError> errorList = ex.getAllErrors();
+        List<Map<String, String>> ls = new ArrayList<>();
+        for( ObjectError item : errorList ) {
+            String filed = ((FieldError) item).getField();
+            String message = item.getDefaultMessage();
+            Map<String, String> hmx = new HashMap<>();
+            hmx.put("filed", filed);
+            hmx.put("message", message);
+            ls.add(hmx);
+        }
+        hm.put("errors", ls );
+        return new ResponseEntity(hm, HttpStatus.BAD_REQUEST);
+    }
 
 }
