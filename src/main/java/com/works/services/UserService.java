@@ -6,6 +6,8 @@ import com.works.utils.Util;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Optional;
@@ -16,9 +18,13 @@ public class UserService {
 
     final DriverManagerDataSource source;
     final AdminRepository aRepo;
-    public UserService(DriverManagerDataSource source, AdminRepository aRepo) {
+    final HttpServletRequest req;
+    final HttpServletResponse res;
+    public UserService(DriverManagerDataSource source, AdminRepository aRepo, HttpServletRequest req, HttpServletResponse res) {
         this.source = source;
         this.aRepo = aRepo;
+        this.req = req;
+        this.res = res;
     }
 
 
@@ -40,7 +46,7 @@ public class UserService {
                 Optional<Admin> oAdmin = aRepo.findById(pid);
                 if (oAdmin.isPresent() ) {
                     Admin adm = oAdmin.get();
-                    System.out.println( adm );
+                    req.getSession().setAttribute("user", adm);
                 }
             }
         }catch (Exception ex) {
@@ -55,6 +61,10 @@ public class UserService {
         aRepo.save(admin);
         admin.setPassword("Secur");
         return admin;
+    }
+
+    public void logOut() {
+        req.getSession().removeAttribute("user");
     }
 
 }

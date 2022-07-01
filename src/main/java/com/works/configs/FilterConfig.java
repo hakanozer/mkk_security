@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.works.entities.Admin;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
@@ -42,6 +43,23 @@ public class FilterConfig implements Filter {
         request.setCharacterEncoding("UTF8");
         response.setCharacterEncoding("UTF8");
         String path = request.getRequestURI();
+        String[] urls = { "/", "/user/register", "/user/login" };
+        boolean loginStatus = false;
+        for ( String url : urls ) {
+            if ( path.equals( url ) ) {
+                loginStatus = true;
+            }
+        }
+        if ( !loginStatus ) {
+            boolean userStatus = request.getSession().getAttribute("user") == null;
+            if ( userStatus ) {
+                response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
+                response.setHeader("Location", "/");
+            }else {
+                Admin adm = (Admin) request.getSession().getAttribute("user");
+                request.setAttribute("adm", adm );
+            }
+        }
 
 
         // xss control
@@ -65,7 +83,6 @@ public class FilterConfig implements Filter {
                         int errors = scanned.getNumberOfErrors(); // Kural ihlali sayısı
                         List<String> errorMsg = scanned.getErrorMessages(); // İhlal nedenleri
                         String sanitized = scanned.getCleanHTML(); // Temizlenmiş çıktı
-                        System.out.println( "URL :" + path );
                         System.out.println("Temiz çıktı: "+sanitized);
                         System.out.println("İhlal sayısı: "+errors);
                         System.out.println("İhlal nedenleri: "+errorMsg);

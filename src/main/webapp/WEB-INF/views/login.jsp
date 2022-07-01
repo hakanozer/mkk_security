@@ -14,7 +14,6 @@
     <div class="col-sm-4"></div>
         <div class="col-sm-4">
             <h2>User Login</h2>
-            ${ email }
             <f:form method="post" modelAttribute="userModel" action="/login">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Email address</label>
