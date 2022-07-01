@@ -18,7 +18,7 @@ public class UserService {
 
     final DriverManagerDataSource source;
     final AdminRepository aRepo;
-    final HttpServletRequest req;
+    final public HttpServletRequest req;
     final HttpServletResponse res;
     public UserService(DriverManagerDataSource source, AdminRepository aRepo, HttpServletRequest req, HttpServletResponse res) {
         this.source = source;
@@ -46,6 +46,7 @@ public class UserService {
                 Optional<Admin> oAdmin = aRepo.findById(pid);
                 if (oAdmin.isPresent() ) {
                     Admin adm = oAdmin.get();
+                    String sessionID = req.getSession().getId();
                     req.getSession().setAttribute("user", adm);
                 }
             }
@@ -65,6 +66,7 @@ public class UserService {
 
     public void logOut() {
         req.getSession().removeAttribute("user");
+        req.getSession().removeAttribute("sessionID");
     }
 
 }

@@ -22,6 +22,8 @@ public class LoginController {
     @GetMapping("/")
     public String login( Model model ) {
         model.addAttribute("userModel", new Admin());
+        String sessionID =  uService.req.getSession().getId();
+        System.out.println( "oldSession: " + sessionID );
         return "login";
     }
 

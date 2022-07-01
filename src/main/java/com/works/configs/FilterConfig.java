@@ -52,10 +52,14 @@ public class FilterConfig implements Filter {
         }
         if ( !loginStatus ) {
             boolean userStatus = request.getSession().getAttribute("user") == null;
+            // old Session
             if ( userStatus ) {
                 response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
                 response.setHeader("Location", "/");
             }else {
+
+                String sessionID =  request.getSession().getId();
+                System.out.println( "NowSession: " + sessionID );
                 Admin adm = (Admin) request.getSession().getAttribute("user");
                 request.setAttribute("adm", adm );
             }
