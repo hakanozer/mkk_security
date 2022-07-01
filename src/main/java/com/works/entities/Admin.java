@@ -3,10 +3,7 @@ package com.works.entities;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -26,8 +23,8 @@ public class Admin {
     @Email(message = "EMail format fail")
     private String email;
 
+    @Column(length = 300)
     @NotEmpty(message = "Password NotEmpty")
-    @Length(message = "Pasword Min 3 Max 13", min = 3, max = 13)
     @NotNull(message = "Password  NotNull")
     private String password;
 

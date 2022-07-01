@@ -37,6 +37,14 @@ public class UserRestController {
         return new ResponseEntity( hm , HttpStatus.OK);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity register( @Valid @RequestBody Admin user) {
+        Map<String, Object> hm = new LinkedHashMap<>();
+        hm.put("status", true);
+        hm.put("user", uService.register( user ));
+        return new ResponseEntity( hm , HttpStatus.OK);
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handle( MethodArgumentNotValidException ex ) {
