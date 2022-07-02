@@ -56,7 +56,7 @@ public class FilterConfig implements Filter {
         }
 
         String path = request.getRequestURI();
-        String[] urls = { "/", "/user/register", "/user/login", "/note/save", "/note/read", "/news" };
+        String[] urls = { "/", "/user/register", "/user/login", "/note/save", "/note/read", "/news", "/profile" };
         boolean loginStatus = false;
         for ( String url : urls ) {
             if ( path.equals( url ) ) {
@@ -154,3 +154,6 @@ public class FilterConfig implements Filter {
 
 
 }
+
+
+
