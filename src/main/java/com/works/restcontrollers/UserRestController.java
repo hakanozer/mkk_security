@@ -26,7 +26,7 @@ public class UserRestController {
     @PostMapping("/login")
     public ResponseEntity login( @Valid @RequestBody Admin user) {
         Map<String, Object> hm = new LinkedHashMap<>();
-        boolean status = uService.userLogin(user.getEmail(), user.getPassword() );
+        boolean status = uService.userLogin(user.getEmail(), user.getPassword(), user.getRemember() );
         if ( status ) {
             hm.put("status", true);
             hm.put("user", user);

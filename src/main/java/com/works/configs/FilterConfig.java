@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.works.entities.Admin;
+import com.works.services.UserService;
 import org.owasp.validator.html.AntiSamy;
 import org.owasp.validator.html.CleanResults;
 import org.owasp.validator.html.Policy;
@@ -25,6 +26,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FilterConfig implements Filter {
+
+    final UserService uService;
+    public FilterConfig(UserService uService) {
+        this.uService = uService;
+    }
 
 
     @Override
@@ -42,6 +48,13 @@ public class FilterConfig implements Filter {
 
         request.setCharacterEncoding("UTF8");
         response.setCharacterEncoding("UTF8");
+
+        boolean userStatus = request.getSession().getAttribute("user") == null;
+        // cookie control
+        if ( userStatus ) {
+            uService.cookieControl();
+        }
+
         String path = request.getRequestURI();
         String[] urls = { "/", "/user/register", "/user/login" };
         boolean loginStatus = false;
@@ -51,7 +64,7 @@ public class FilterConfig implements Filter {
             }
         }
         if ( !loginStatus ) {
-            boolean userStatus = request.getSession().getAttribute("user") == null;
+             userStatus = request.getSession().getAttribute("user") == null;
             // old Session
             if ( userStatus ) {
                 response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);

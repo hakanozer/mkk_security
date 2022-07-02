@@ -30,7 +30,7 @@ public class LoginController {
     @PostMapping("/login")
     public String userLogin(@Valid @ModelAttribute("userModel") Admin user, BindingResult bindingResult, Model model) {
         if ( !bindingResult.hasErrors() ) {
-            boolean status = uService.userLogin( user.getEmail(), user.getPassword() );
+            boolean status = uService.userLogin( user.getEmail(), user.getPassword(), user.getRemember() );
             if ( status ) {
                 return "redirect:/dashboard";
             }

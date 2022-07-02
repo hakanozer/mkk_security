@@ -6,6 +6,7 @@ import com.works.utils.Util;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.PreparedStatement;
@@ -29,7 +30,7 @@ public class UserService {
 
 
 
-    public boolean userLogin( String email, String password ) {
+    public boolean userLogin( String email, String password, String remember ) {
         boolean status = false;
         try {
             // select * from admin where email = 'a@a.com' and password = ''or 1 = 1 --'
@@ -48,6 +49,11 @@ public class UserService {
                     Admin adm = oAdmin.get();
                     String sessionID = req.getSession().getId();
                     req.getSession().setAttribute("user", adm);
+                    if ( remember.equals("on") ) {
+                        Cookie cookie = new Cookie("user",  Util.sifrele(""+adm.getPid(), 3) );
+                        cookie.setMaxAge( 60 * 60 );
+                        res.addCookie(cookie);
+                    }
                 }
             }
         }catch (Exception ex) {
@@ -66,7 +72,36 @@ public class UserService {
 
     public void logOut() {
         req.getSession().removeAttribute("user");
-        req.getSession().removeAttribute("sessionID");
+        cookieDelete();
+    }
+
+
+    public void cookieControl() {
+        if ( req.getCookies() != null ) {
+            Cookie[] cookies = req.getCookies();
+            for ( Cookie cookie : cookies ) {
+                if ( cookie.getName().equals("user") ) {
+                    try {
+                        String stId = Util.sifreCoz( cookie.getValue(), 3 );
+                        int id = Integer.parseInt( stId );
+                        Optional<Admin> oAdmin = aRepo.findById(id);
+                        if ( oAdmin.isPresent() ) {
+                            req.getSession().setAttribute("user", oAdmin.get());
+                        }
+                    }catch (Exception ex) {
+                        System.err.println("Cookie Value Error");
+                        cookieDelete();
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void cookieDelete() {
+        Cookie cookie = new Cookie("user", "");
+        cookie.setMaxAge(0);
+        res.addCookie(cookie);
     }
 
 }
